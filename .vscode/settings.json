@@ -1,0 +1,6 @@
+{
+  "editor.codeActionsOnSave": {
+
+  },
+  "css.lint.unknownAtRules": "ignore"
+}

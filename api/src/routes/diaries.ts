@@ -21,11 +21,11 @@ router.get("/get_codes_country", async (_, res) => {
   }
 });
 
-router.get("/get_codes_city", async (_, res) => {
+router.post("/get_codes_city", async (req, res) => {
   try {
-    // Realizar la solicitud HTTP a la URL especificada
+    const { countryCode } = req.body; // Extraer countryCode del cuerpo de la solicitud
     const response = await axios.get(
-      "https://api.test.hotelbeds.com/transfer-cache-api/1.0/locations/destinations?fields=ALL&language=es&countryCodes=US",
+      `https://api.test.hotelbeds.com/transfer-cache-api/1.0/locations/destinations?fields=ALL&language=es&countryCodes=${countryCode}`,
       {
         headers: {
           "Api-key": process.env.API_KEY,
@@ -36,6 +36,47 @@ router.get("/get_codes_city", async (_, res) => {
     res.send(response.data);
   } catch (error) {
     console.error(error);
+    res.status(500).send("Error fetching data");
+  }
+});
+
+router.post("/get_availability", async (req, res) => {
+  try {
+    const { selectFrom } = req.body;
+    const { selectTo } = req.body;
+
+    const { numberAdults } = req.body;
+    const { numberChildren } = req.body;
+    const { numberInfants } = req.body;
+
+    const { dateFrom } = req.body;
+    const { dateTo } = req.body;
+
+    const { selectedHotelFrom } = req.body;
+    const { selectedHotelTo } = req.body;
+
+    const { selectedCityTo } = req.body;
+    const { selectedCityFrom } = req.body;
+
+    const response = await axios.get(
+      `https://api.test.hotelbeds.com/transfer-api/1.0/availability/en/from/${selectFrom}/${
+        selectFrom == "ATLAS" ? selectedHotelFrom : selectedCityFrom
+      }/to/${selectTo}/${
+        selectTo == "ATLAS" ? selectedHotelTo : selectedCityTo
+      }/${dateFrom}${
+        dateTo ? `/${dateTo}` : ""
+      }/${numberAdults}/${numberChildren}/${numberInfants}`,
+      {
+        headers: {
+          "Api-key": process.env.API_KEY,
+        },
+      }
+    );
+
+    res.send(response?.data?.services);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching data");
   }
 });
 
@@ -57,11 +98,12 @@ router.get("/get_vehicles", async (_, res) => {
   }
 });
 
-router.get("/get_hotels", async (_, res) => {
+router.post("/get_hotels", async (req, res) => {
   try {
-    // Realizar la solicitud HTTP a la URL especificada
+    const { countryCode } = req.body;
+    const { cityCode } = req.body;
     const response = await axios.get(
-      "https://api.test.hotelbeds.com/transfer-cache-api/1.0/hotels?fields=ALL&language=es&countryCodes=ES&destinationCodes=PMI&limit=50",
+      `https://api.test.hotelbeds.com/transfer-cache-api/1.0/hotels?fields=ALL&language=es&countryCodes=${countryCode}&destinationCodes=${cityCode}&limit=50`,
       {
         headers: {
           "Api-key": process.env.API_KEY,
@@ -72,6 +114,53 @@ router.get("/get_hotels", async (_, res) => {
     res.send(response.data);
   } catch (error) {
     console.error(error);
+    res.status(500).send("Error fetching data");
+  }
+});
+
+router.post("/confirm_transfer", async (req, res) => {
+  let dataSend = {
+    language: "en",
+    holder: {
+      name: req.body.name,
+      surname: req.body.surname,
+      email: req.body.email,
+      phone: req.body.phone,
+    },
+    transfers: [
+      {
+        rateKey: req.body.transfer.rateKey,
+        transferDetails: [
+          {
+            type: req.body.transferDetailType,
+            direction: req.body.transfer.direction,
+            code: req.body.transferDetailCode,
+            companyName: req.body.transferDetailCompany,
+          },
+        ],
+      },
+    ],
+    clientReference: req.body.clientReference,
+  };
+
+  console.log(dataSend.transfers[0]);
+  console.log(dataSend);
+  try {
+    const response = await axios.post(
+      `https://api.test.hotelbeds.com/transfer-api/1.0/bookings`,
+      dataSend,
+      {
+        headers: {
+          "Api-key": process.env.API_KEY,
+        },
+      }
+    );
+
+    res.send(response.data);
+  } catch (error) {
+    //@ts-ignore
+    console.error(error.response.data);
+    res.status(500).send("Error fetching data");
   }
 });
 

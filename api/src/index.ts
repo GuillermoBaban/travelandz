@@ -1,15 +1,16 @@
 import express from "express";
 import diaryRoutes from "./routes/diaries";
 import * as dotenv from "dotenv";
+import cors = require("cors");
 
 dotenv.config();
 
 const app = express();
+app.use(cors());
 app.use(express.json()); //middleware
 const PORT = 3000;
 
 app.get("/", (_, res) => {
-  console.log("Hello Worldaoe" + new Date());
   res.send("Hello Worldaoe");
 });
 
