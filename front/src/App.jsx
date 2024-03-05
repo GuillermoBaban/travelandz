@@ -94,7 +94,7 @@ function App() {
         <form method="post" onSubmit={handleSubmit}>
           <div className="text-3xl font-bold underline mt-10">
             <span className="text-center block mb-2 text-sm font-medium text-white">
-              Desde donde sale
+              Departure location
             </span>
             <SelectFrom onOptionSelected={handleOptionFrom} />
             {selectFrom && (
@@ -134,7 +134,7 @@ function App() {
 
           <div className="text-3xl font-bold underline">
             <span className="text-center block mt-4 text-sm font-medium text-white">
-              A donde llega
+              Arrival destination
             </span>
             <SelectFrom onOptionSelected={handleOptionFormTo} />
             {selectTo && (
@@ -181,7 +181,7 @@ function App() {
                       htmlFor="dateFrom"
                       className="block mt-2 text-sm font-medium text-white"
                     >
-                      Fecha de salida
+                      Departure date
                     </label>
                     <input
                       style={{ color: "#737575" }}
@@ -200,7 +200,7 @@ function App() {
                       htmlFor="dateTo"
                       className="block mt-2 text-sm font-medium text-white"
                     >
-                      Fecha de vuelta (opcional)
+                      Return date (optional)
                     </label>
                     <input
                       style={{ color: "#737575" }}
