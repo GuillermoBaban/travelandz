@@ -1,15 +1,11 @@
-import React from "react";
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import Spinner from "./Spinner";
+import ErrorComponent from "./ErrorComponent";
 
 function SelectComponent({ onOptionSelected }) {
   const [showCountries, setShowCountries] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const handleSelectChange = (event) => {
-    const selectedOption = event.target.value;
-    onOptionSelected(selectedOption);
-  };
+  const [error, setError] = useState(false);
 
   const fetchCountries = async () => {
     try {
@@ -17,19 +13,31 @@ function SelectComponent({ onOptionSelected }) {
         "http://localhost:3000/api/diaries/get_codes_country"
       );
       const data = await response.json();
-      return data || [];
+      setShowCountries(data);
+      setLoading(false);
     } catch (error) {
-      console.error("Error fetching data:", error);
-      return [];
+      setError(true);
+      setLoading(false);
     }
   };
 
-  useMemo(async () => {
-    const fetchedCountries = await fetchCountries();
-    setShowCountries(fetchedCountries);
+  useMemo(() => {
+    if (showCountries.length === 0) {
+      fetchCountries();
+    }
+  }, [showCountries]);
+
+  const handleSelectChange = (event) => {
+    const selectedOption = event.target.value;
+    onOptionSelected(selectedOption);
+  };
+
+  const handleClick = () => {
+    setError(false);
+    setLoading(true);
+    if (showCountries.length === 0) fetchCountries();
     setLoading(false);
-    return fetchedCountries;
-  }, []);
+  };
 
   if (loading) {
     return (
@@ -40,23 +48,28 @@ function SelectComponent({ onOptionSelected }) {
   }
 
   return (
-    <div className="max-w-sm mx-auto">
-      <select
-        id="secondSelect"
-        className="text-gray-900 text-sm rounded-lg w-full p-2.5 mt-4"
-        onChange={handleSelectChange}
-        defaultValue={""}
-        required
-      >
-        <option value="" disabled hidden>
-          Select an option
-        </option>
-        {showCountries.map((country) => (
-          <option key={country.code} value={country.code}>
-            {country.name}
+    <div>
+      {error && <ErrorComponent setError={setError} />}
+
+      <div className="max-w-sm mx-auto">
+        <select
+          id="secondSelect"
+          className="text-gray-900 text-sm rounded-lg w-full p-2.5 mt-4"
+          onChange={handleSelectChange}
+          defaultValue={""}
+          required
+          onClick={handleClick}
+        >
+          <option value="" disabled hidden>
+            Select an option
           </option>
-        ))}
-      </select>
+          {showCountries.map((country) => (
+            <option key={country.code} value={country.code}>
+              {country.name}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   );
 }

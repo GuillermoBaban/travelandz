@@ -17,7 +17,7 @@ router.get("/get_codes_country", async (_, res) => {
 
     res.send(response.data);
   } catch (error) {
-    console.error(error);
+    res.status(500).send("Error obtaining country codes.");
   }
 });
 
@@ -36,7 +36,7 @@ router.post("/get_codes_city", async (req, res) => {
     res.send(response.data);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error fetching data");
+    res.status(500).send("Error obtaining city codes.");
   }
 });
 
@@ -76,25 +76,7 @@ router.post("/get_availability", async (req, res) => {
     res.send(response?.data?.services);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error fetching data");
-  }
-});
-
-router.get("/get_vehicles", async (_, res) => {
-  try {
-    // Realizar la solicitud HTTP a la URL especificada
-    const response = await axios.get(
-      "https://api.test.hotelbeds.com/transfer-cache-api/1.0/masters/transferTypes?fields=ALL&language=es&offset=1&limit=100",
-      {
-        headers: {
-          "Api-key": process.env.API_KEY,
-        },
-      }
-    );
-
-    res.send(response.data);
-  } catch (error) {
-    console.error(error);
+    res.status(500).send("Error obtaining availability.");
   }
 });
 
@@ -114,7 +96,7 @@ router.post("/get_hotels", async (req, res) => {
     res.send(response.data);
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error fetching data");
+    res.status(500).send("Error obtaining hotels.");
   }
 });
 
@@ -141,10 +123,10 @@ router.post("/confirm_transfer", async (req, res) => {
       },
     ],
     clientReference: req.body.clientReference,
+    welcomeMessage: `Welcome ${req.body.name} ${req.body.surname}!`,
+    remark: req.body.comments,
   };
 
-  console.log(dataSend.transfers[0]);
-  console.log(dataSend);
   try {
     const response = await axios.post(
       `https://api.test.hotelbeds.com/transfer-api/1.0/bookings`,
@@ -158,14 +140,9 @@ router.post("/confirm_transfer", async (req, res) => {
 
     res.send(response.data);
   } catch (error) {
-    //@ts-ignore
-    console.error(error.response.data);
-    res.status(500).send("Error fetching data");
+    console.error(error);
+    res.status(500).send("Error confirming transfer.");
   }
-});
-
-router.post("/", (_, res) => {
-  res.send("Got a POST request");
 });
 
 export default router;

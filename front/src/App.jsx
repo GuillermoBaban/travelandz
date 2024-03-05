@@ -5,6 +5,7 @@ import SelectFrom from "./components/SelectFrom";
 import SelectCity from "./components/SelectCity";
 import SelectHotel from "./components/SelectHotel";
 import TranfersCards from "./components/TransferCard";
+import ArrowBack from "./assets/ArrowBack";
 import Spinner from "./components/Spinner";
 
 function App() {
@@ -35,6 +36,10 @@ function App() {
   function handleOptionFormTo(option) {
     if (option !== "none") setSelectTo(option);
     if (option == "ATLAS") setSelectTo(option);
+  }
+
+  function handleArrowBackClick() {
+    window.location.href = "/";
   }
 
   const handleSubmit = async (event) => {
@@ -87,7 +92,7 @@ function App() {
     <div className="App">
       {!loadingForm && tranfers.length === 0 && (
         <form method="post" onSubmit={handleSubmit}>
-          <div className="text-3xl font-bold underline">
+          <div className="text-3xl font-bold underline mt-10">
             <span className="text-center block mb-2 text-sm font-medium text-white">
               Desde donde sale
             </span>
@@ -275,17 +280,24 @@ function App() {
               type="submit"
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
             >
-              Button
+              Search
             </button>
           </div>
         </form>
       )}
       {loadingForm && <Spinner />}
-      <div className="grid grid-cols-1 gap-10 md:grid-cols-4">
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-4 mt-5">
         {!loadingForm &&
           tranfers.length > 0 &&
           tranfers.map((transfer, index) => (
-            <TranfersCards key={index} transfer={transfer} />
+            <>
+              <div className="absolute top-2">
+                <button onClick={handleArrowBackClick}>
+                  <ArrowBack /> {/* Ícono de flecha izquierda */}
+                </button>
+              </div>
+              <TranfersCards key={index} transfer={transfer} />
+            </>
           ))}
       </div>
     </div>

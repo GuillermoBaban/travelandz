@@ -23,15 +23,12 @@ function TranfersCards({ transfer }) {
           Price: {transfer.price.totalAmount} {transfer.price.currencyId}
         </p>
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-center">
         <button
           onClick={() => setOpen(true)}
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full"
         >
-          Confir tranfer
-        </button>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full">
-          More info
+          Confirm tranfer
         </button>
       </div>
       <ConfirmDialog
