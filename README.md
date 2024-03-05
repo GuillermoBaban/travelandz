@@ -1,5 +1,5 @@
 
-# Challanger traveladz
+# Challenger traveladz
 I have created a challenge for Traveladz. The goal is to select a departure destination and an arrival destination (Airport or Hotel). Once selected, and by pressing the 'Search' button, available transfers will be displayed, each with its description to confirm the selection.
 
 
