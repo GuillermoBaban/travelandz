@@ -36,11 +36,13 @@ Add API_KEY
 Start the node server
 
 ```bash
+  cd ./api/
   npm run dev
 ```
 
 Start front
 ```bash
+  cd ./front/
   npm run dev
 ```
 
